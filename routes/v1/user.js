@@ -1,19 +1,19 @@
 const express=require('express');
 const userRouter=express.Router();
 
-const userController=require ('../../controllers/users')
+const userController=require ('../../controllers/user')
 
 
-userRouter.get('/',userController.getAllusers)
+userRouter.get('/',userController.getAllUsers)
 
-userRouter.get('/:id',userController.getuserById)
+userRouter.get('/:id',userController.getUserById)
 
-userRouter.post('/',userController.createuser)
+userRouter.post('/',userController.createUser)
 
-userRouter.delete('/:id',userController.deleteuser)
+userRouter.delete('/:id',userController.deleteUser)
 
-userRouter.put('/:id',userController.updateuser)
+userRouter.put('/:id',userController.updateUser)
 
-userRouter.patch('/:id',userController.partialUpdateuser)
+userRouter.patch('/:id',userController.partialUpdateUser)
 
 module.exports = userRouter

@@ -1,19 +1,19 @@
 const express=require('express');
 const authorRouter=express.Router();
 
-const authorController=require ('../../controllers/authors')
+const authorController=require ('../../controllers/author')
 
 
-authorRouter.get('/',authorController.getAllauthors)
+authorRouter.get('/',authorController.getAllAuthors)
 
-authorRouter.get('/:id',authorController.getauthorById)
+authorRouter.get('/:id',authorController.getAuthorById)
 
-authorRouter.post('/',authorController.createauthor)
+authorRouter.post('/',authorController.createAuthor)
 
-authorRouter.delete('/:id',authorController.deleteauthor)
+authorRouter.delete('/:id',authorController.deleteAuthor)
 
-authorRouter.put('/:id',authorController.updateauthor)
+authorRouter.put('/:id',authorController.updateAuthor)
 
-authorRouter.patch('/:id',authorController.partialUpdateauthor)
+authorRouter.patch('/:id',authorController.partialUpdateAuthor)
 
 module.exports = authorRouter

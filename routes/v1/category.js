@@ -1,19 +1,19 @@
 const express=require('express');
-const categoryRouter=express.Router();
+const CategoryRouter=express.Router();
 
-const categoryController=require ('../../controllers/categorys')
+const categoryController=require ('../../controllers/category')
 
 
-categoryRouter.get('/',categoryController.getAllcategorys)
+CategoryRouter.get('/',categoryController.createCategory)
 
-categoryRouter.get('/:id',categoryController.getcategoryById)
+CategoryRouter.get('/:id',categoryController.getCategoryById)
 
-categoryRouter.post('/',categoryController.createcategory)
+CategoryRouter.post('/',categoryController.createCategory)
 
-categoryRouter.delete('/:id',categoryController.deletecategory)
+CategoryRouter.delete('/:id',categoryController.deleteCategory)
 
-categoryRouter.put('/:id',categoryController.updatecategory)
+CategoryRouter.put('/:id',categoryController.updateCategory)
 
-categoryRouter.patch('/:id',categoryController.partialUpdatecategory)
+CategoryRouter.patch('/:id',categoryController.partialUpdateCategory)
 
-module.exports = categoryRouter
+module.exports = CategoryRouter

@@ -11,6 +11,6 @@ v1Router.use('/v1/books', bookRouter)
 v1Router.use('/v1/authors', authorRouter)
 v1Router.use('/v1/categories', categoryRouter)
 v1Router.use('/v1/users', userRouter)
-v1Router.use('/v1/auth', authRouter)
+// v1Router.use('/v1/auth', authRouter)
 
 module.exports = v1Router
