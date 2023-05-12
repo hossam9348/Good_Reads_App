@@ -5,7 +5,7 @@ const helpers = require("../utiles/helpers");
 const getAllCategories = async (req,res)=>{
   let page = Number(req.query.page);
   let limit = Number(req.query.limit);
-  const noOfItems = await helpers.getNoOfItems(booksModel);
+  const noOfItems = await helpers.getNoOfItems(categoryModel);
   const totalPages = Math.ceil(noOfItems / limit);
   if (page > totalPages) {
     page = totalPages;
