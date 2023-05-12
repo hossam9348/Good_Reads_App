@@ -1,13 +1,32 @@
-const authorModel=require('../models/author');
+const authorModel = require('../models/author');
 
-const getAllAuthors = async ()=>{
-  try{
-    const authors=await authorModel.find({});
-    return res.json(authors)
-    }
-    catch(err){
-      return res.json({status:false})
-    }
+const getAllAuthors = async (req,res)=>{
+  let page = Number(req.query.page);
+  let limit = Number(req.query.limit);
+  const noOfItems = await helpers.getNoOfItems(booksModel);
+  const totalPages = Math.ceil(noOfItems / limit);
+  if (page > totalPages) {
+    page = totalPages;
+  }
+  if (page <= 0) {
+    page = 1;
+  }
+  if (limit > noOfItems) {
+    limit = noOfItems;
+  }
+  try {
+    const authors = await authorModel
+      .find({})
+      .skip((page - 1) * limit)
+      .limit(limit);
+    return res.json({
+      status: true,
+      data: authors,
+      totalPages,
+    });
+  } catch (err) {
+    return res.json({ status: false });
+  }
 } 
 
 
@@ -15,20 +34,22 @@ const getAllAuthors = async ()=>{
 const getAuthorById=async(req,res)=>{
   const id=req.params.id
   try {
-      const Author=await AuthorModel.find({_id:id});
-      return res.json(Author)
+      const Author=await authorModel.find({_id:id});
+      return res.json({status:true,data:Author})
      }
      catch (err){
+      console.log(err);
       return res.json({status:false})
      }
 }
 
 const createAuthor=async (req, res) => {
   try {
-  const Authors= new AuthorModel(req.body)
+  const Authors= new authorModel(req.body)
   await Authors.save();
-  return res.json(Authors);
+  return res.json({status:true,data:Authors});
   } catch (err) {
+    console.log(err);
     return res.json({status:false})
   }
 }
@@ -36,10 +57,12 @@ const createAuthor=async (req, res) => {
 const deleteAuthor=async (req,res)=>{
   const id=req.params.id
   try{
-      await AuthorModel.deleteOne({_id:id})
+      await authorModel.deleteOne({_id:id})
       return res.json({status:true})
   }
   catch(err){
+    console.log(err);
+
       return res.json({status:false})
   }
 }
@@ -47,10 +70,12 @@ const deleteAuthor=async (req,res)=>{
 const updateAuthor=async (req,res)=>{
   const id=req.params.id
   try{
-      await AuthorModel.updateOne({_id:id},{$set :req.body})
+      await authorModel.updateOne({_id:id},{$set :req.body})
       return res.json({status:true})
   }
   catch(err){
+    console.log(err);
+
     return res.json({status:false})
   }
 
@@ -59,7 +84,7 @@ const updateAuthor=async (req,res)=>{
 const partialUpdateAuthor=async (req,res)=>{
   const id=req.params.id
   try{
-      const Author=await AuthorModel.findOne({_id:id});
+      const Author=await authorModel.findOne({_id:id});
       for (const key in Author) {
           if (key in req.body){
               Author[key]=req.body[key]
@@ -69,6 +94,8 @@ const partialUpdateAuthor=async (req,res)=>{
       return res.json({status:true})
   }
   catch(err){
+    console.log(err);
+
     return res.json({status:false})
   }
 

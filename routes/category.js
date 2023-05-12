@@ -1,40 +1,21 @@
 
 const categoryModel = require('../models/category');
 
-const getAllCategories = async (req,res)=>{
-  let page = Number(req.query.page);
-  let limit = Number(req.query.limit);
-  const noOfItems = await helpers.getNoOfItems(booksModel);
-  const totalPages = Math.ceil(noOfItems / limit);
-  if (page > totalPages) {
-    page = totalPages;
-  }
-  if (page <= 0) {
-    page = 1;
-  }
-  if (limit > noOfItems) {
-    limit = noOfItems;
-  }
-  try {
-    const categories = await categoryModel
-      .find({})
-      .skip((page - 1) * limit)
-      .limit(limit);
-    return res.json({
-      status: true,
-      data: categories,
-      totalPages,
-    });
-  } catch (err) {
-    return res.json({ status: false });
-  }
+const getAllCategories = async ()=>{
+  try{
+    const categories = await categoryModel.find({});
+    return res.json(categories)
+    }
+    catch(err){
+      return res.json({status:false})
+    }
 } 
 
 const getCategoryById=async(req,res)=>{
   const id=req.params.id
   try {
       const category = await categoryModel.find({_id:id});
-      return res.json({status:true,data:category})
+      return res.json(category)
     }
     catch (err){
       return res.json({status:false})
@@ -45,7 +26,7 @@ const createCategory=async (req, res) => {
   try {
   const category= new categoryModel(req.body)
   await category.save();
-  return res.json({status:true,data:category});
+  return res.json(category);
   } catch (err) {
     return res.json({status:false})
   }

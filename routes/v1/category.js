@@ -4,7 +4,7 @@ const CategoryRouter=express.Router();
 const categoryController=require ('../../controllers/category')
 
 
-CategoryRouter.get('/',categoryController.createCategory)
+CategoryRouter.get('/',categoryController.getAllCategories)
 
 CategoryRouter.get('/:id',categoryController.getCategoryById)
 

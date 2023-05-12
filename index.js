@@ -4,13 +4,12 @@ const db = require("./config/db");
 const app = express();
 
 // const bodyParser = require('body-parser');
-const path = require('path');
 
 
 const v1Router = require('./routes/v1/index');
 const PORT = process.env.PORT || 3000;
 
-
+app.use(express.json())
 
 const mongoose=require('mongoose');
 mongoose.connect(process.env.DB_URL).catch((err)=>{console.log(err);});

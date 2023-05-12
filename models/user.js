@@ -4,13 +4,21 @@ const userSchema=mongoose.Schema({
     lastName:{type:String ,required:true},
     email:{type:String,required:true},
     password:{type:String,required:true},
-    imgUrl:{type:String ,required:true},
+    imgUrl:{type:String },
     books:[{
-        bookId:{type:mongoose.Schema.Types.ObjectId, ref:'category'}
+        bookId:{type:mongoose.Schema.Types.ObjectId, ref:'book'}
         ,rate:{type:Number}
-        ,status:{enum: ['want to read', 'read', 'reading']}
+        ,status:{
+            type:String,
+            enum: ['want to read', 'read', 'reading'],
+            default:'want to read'
+        }
     }],
-    role:{enum:['user','admin']}
+    role:{
+        type: String,
+        enum : ['user','admin'],
+        default: 'user'
+    }
 })
 
 const userModel=mongoose.model('user',userSchema)
