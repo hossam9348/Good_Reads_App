@@ -1,5 +1,6 @@
 
 const categoryModel = require('../models/category');
+const helpers = require("../utiles/helpers");
 
 const getAllCategories = async (req,res)=>{
   let page = Number(req.query.page);
