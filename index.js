@@ -3,7 +3,6 @@ require("dotenv").config();
 const db = require("./config/db");
 const app = express();
 
-// const bodyParser = require('body-parser');
 
 
 const v1Router = require('./routes/v1/index');
@@ -13,6 +12,10 @@ app.use(express.json())
 
 const mongoose=require('mongoose');
 mongoose.connect(process.env.DB_URL).catch((err)=>{console.log(err);});
+
+app.listen(PORT, () => {
+    console.log(`server running at http://localhost:${PORT} .....`)
+})
 
 // db connection
 
@@ -27,10 +30,8 @@ app.use('/', (req, res) => {
 });
 
 app.use((error, req, res, next) => {
-    res.status(error.status || 400).send({ message: error.message || error });
+   return res.status(error.status || 400)
+   .send({ message: error.message || error.array || error});
     // next()
 })
 
-app.listen(PORT, () => {
-    console.log(`server running at http://localhost:${PORT} .....`)
-})

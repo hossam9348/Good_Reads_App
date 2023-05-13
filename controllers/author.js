@@ -1,7 +1,7 @@
 const authorModel = require('../models/author');
 const helpers = require("../utiles/helpers");
 
-const getAllAuthors = async (req,res)=>{
+const getAllAuthors = async (req,res,next)=>{
   let page = Number(req.query.page);
   let limit = Number(req.query.limit);
   const noOfItems = await helpers.getNoOfItems(authorModel);
@@ -26,7 +26,7 @@ const getAllAuthors = async (req,res)=>{
       totalPages,
     });
   } catch (err) {
-    return res.json({ status: false });
+    next ({error:{ status: false },err});
   }
 } 
 

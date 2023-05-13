@@ -1,5 +1,7 @@
 
 const categoryModel = require('../models/category');
+const authorModel = require('../models/author');
+
 const helpers = require("../utiles/helpers");
 
 const getAllCategories = async (req,res)=>{
@@ -88,9 +90,24 @@ const partialUpdateCategory=async (req,res)=>{
       return res.json({status:true})
   }
   catch(err){
-    return res.json({status:false})
+    return next(err)
   }
 
+}
+
+const getCategoryAuthor = async (req,res)=>{
+  try {
+    const categories = await categoryModel
+      .find({},{name:1})
+    const authors = await authorModel
+      .find({},{firstName:1,lastName:1})
+    return res.json({
+      status: true,
+      data: {categories,authors},
+    });
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports={
@@ -100,4 +117,5 @@ module.exports={
   deleteCategory,
   updateCategory,
   partialUpdateCategory,
+  getCategoryAuthor,
 };

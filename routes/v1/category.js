@@ -4,9 +4,12 @@ const CategoryRouter=express.Router();
 const categoryController=require ('../../controllers/category')
 
 
+CategoryRouter.get('/dropdown',categoryController.getCategoryAuthor)
+
 CategoryRouter.get('/',categoryController.getAllCategories)
 
 CategoryRouter.get('/:id',categoryController.getCategoryById)
+
 
 CategoryRouter.post('/',categoryController.createCategory)
 
