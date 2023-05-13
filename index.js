@@ -18,7 +18,12 @@ app.listen(PORT, () => {
 })
 
 // db connection
+const cors = require('cors');
 
+
+app.use(cors({
+    origin: ['http://localhost:3000']
+}));
 
 //  middlewares
 

@@ -10,7 +10,6 @@ CategoryRouter.get('/',categoryController.getAllCategories)
 
 CategoryRouter.get('/:id',categoryController.getCategoryById)
 
-
 CategoryRouter.post('/',categoryController.createCategory)
 
 CategoryRouter.delete('/:id',categoryController.deleteCategory)
