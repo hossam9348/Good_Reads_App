@@ -12,7 +12,6 @@ const register = (req,res,next) => {
     const error = new Error()
           error.status = 400;
           error.array = result.array();
-          // res.send(error.array)
           return next(error)
   }
   return res.send(req.body.email)

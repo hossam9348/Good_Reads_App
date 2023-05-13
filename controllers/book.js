@@ -1,23 +1,16 @@
 const booksModel = require("../models/book");
 const helpers = require("../utiles/helpers");
 
-const getAllBooks = async (req, res) => {
-  let page = Number(req.query.page);
-  let limit = Number(req.query.limit);
-  const noOfItems = await helpers.getNoOfItems(booksModel);
-  const totalPages = Math.ceil(noOfItems / limit);
-  if (page > totalPages) {
-    page = totalPages;
-  }
-  if (page <= 0) {
-    page = 1;
-  }
-  if (limit > noOfItems) {
-    limit = noOfItems;
-  }
+const getAllBooks = async (req, res,next) => {
+  const {name,categoryId,authorId} = req.query
+  const {page,limit,totalPages} = await helpers.paginationCriteria(
+    booksModel,
+    Number(req.query.page),
+    Number(req.query.limit));
+    const filter = helpers.filtrationCriteria({name,categoryId,authorId})
   try {
     const books = await booksModel
-      .find({})
+      .find(filter)
       .skip((page - 1) * limit)
       .limit(limit);
     return res.json({
@@ -26,51 +19,51 @@ const getAllBooks = async (req, res) => {
       totalPages,
     });
   } catch (err) {
-    return res.json({ status: false });
+    return next(err);
   }
 };
 
-const getBookById = async (req, res) => {
+const getBookById = async (req, res ,next) => {
   const id = req.params.id;
   try {
     const books = await booksModel.find({ _id: id });
     return res.json({ status: true, data: books });
   } catch (err) {
-    return res.json({ status: false });
+    return next(error);
   }
 };
 
-const createBook = async (req, res) => {
+const createBook = async (req, res ,next) => {
   try {
     const books = new booksModel(req.body);
     await books.save();
     return res.json({ status: true, data: books });
   } catch (err) {
-    return res.json({ status: false });
+    return next(error);
   }
 };
 
-const deleteBook = async (req, res) => {
+const deleteBook = async (req, res,next) => {
   const id = req.params.id;
   try {
     await booksModel.deleteOne({ _id: id });
     return res.json({ status: true });
   } catch (err) {
-    return res.json({ status: false });
+    return next(err);
   }
 };
 
-const updateBook = async (req, res) => {
+const updateBook = async (req, res,next) => {
   const id = req.params.id;
   try {
     await booksModel.updateOne({ _id: id }, { $set: req.body });
     return res.json({ status: true });
   } catch (err) {
-    return res.json({ status: false });
+    return next(err);
   }
 };
 
-const partialUpdateBook = async (req, res) => {
+const partialUpdateBook = async (req, res,next) => {
   const id = req.params.id;
   try {
     const books = await booksModel.findOne({ _id: id });
@@ -82,7 +75,7 @@ const partialUpdateBook = async (req, res) => {
     await booksModel.updateOne({ _id: id }, { $set: books });
     return res.json({ status: true });
   } catch (err) {
-    return res.json({ status: false });
+    return next(err);
   }
 };
 

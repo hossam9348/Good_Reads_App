@@ -5,15 +5,21 @@ const getAllAuthors = async (req,res,next)=>{
   let page = Number(req.query.page);
   let limit = Number(req.query.limit);
   const noOfItems = await helpers.getNoOfItems(authorModel);
-  const totalPages = Math.ceil(noOfItems / limit);
-  if (page > totalPages) {
-    page = totalPages;
-  }
   if (page <= 0) {
     page = 1;
   }
   if (limit > noOfItems) {
     limit = noOfItems;
+  }
+  if (!page){
+    page=1
+  }
+  if(!limit){
+    limit=5
+  }
+  const totalPages = Math.ceil(noOfItems / limit);
+  if (page > totalPages) {
+    page = totalPages;
   }
   try {
     const authors = await authorModel
@@ -26,13 +32,13 @@ const getAllAuthors = async (req,res,next)=>{
       totalPages,
     });
   } catch (err) {
-    next ({error:{ status: false },err});
+    next (err);
   }
 } 
 
 
 
-const getAuthorById=async(req,res)=>{
+const getAuthorById=async(req,res,next)=>{
   const id=req.params.id
   try {
       const Author=await authorModel.find({_id:id});
@@ -40,22 +46,22 @@ const getAuthorById=async(req,res)=>{
      }
      catch (err){
       console.log(err);
-      return res.json({status:false})
+      return res.json(next)
      }
 }
 
-const createAuthor=async (req, res) => {
+const createAuthor=async (req,res,next) => {
   try {
   const Authors= new authorModel(req.body)
   await Authors.save();
   return res.json({status:true,data:Authors});
   } catch (err) {
     console.log(err);
-    return res.json({status:false})
+    return next(err)
   }
 }
 
-const deleteAuthor=async (req,res)=>{
+const deleteAuthor=async (req,res,next)=>{
   const id=req.params.id
   try{
       await authorModel.deleteOne({_id:id})
@@ -64,11 +70,11 @@ const deleteAuthor=async (req,res)=>{
   catch(err){
     console.log(err);
 
-      return res.json({status:false})
+    return next(err)
   }
 }
 
-const updateAuthor=async (req,res)=>{
+const updateAuthor=async (req,res,next)=>{
   const id=req.params.id
   try{
       await authorModel.updateOne({_id:id},{$set :req.body})
@@ -77,12 +83,12 @@ const updateAuthor=async (req,res)=>{
   catch(err){
     console.log(err);
 
-    return res.json({status:false})
+    return next(err)
   }
 
 }
 
-const partialUpdateAuthor=async (req,res)=>{
+const partialUpdateAuthor=async (req,res,next)=>{
   const id=req.params.id
   try{
       const Author=await authorModel.findOne({_id:id});
@@ -96,7 +102,7 @@ const partialUpdateAuthor=async (req,res)=>{
   }
   catch(err){
     console.log(err);
-    next(err)
+    return next(err)
   }
 
 }

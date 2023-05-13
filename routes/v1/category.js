@@ -6,9 +6,13 @@ const categoryController=require ('../../controllers/category')
 
 CategoryRouter.get('/dropdown',categoryController.getCategoryAuthor)
 
-CategoryRouter.get('/',categoryController.getAllCategories)
 
 CategoryRouter.get('/:id',categoryController.getCategoryById)
+
+
+// CategoryRouter.get('/books',categoryController.getAllBooks)
+
+CategoryRouter.get('/',categoryController.getAllCategories)
 
 CategoryRouter.post('/',categoryController.createCategory)
 

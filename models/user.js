@@ -7,12 +7,13 @@ const userSchema=mongoose.Schema({
     imgUrl:{type:String },
     books:[{
         bookId:{type:mongoose.Schema.Types.ObjectId, ref:'book'}
-        ,rate:{type:Number}
+        ,rate:{type:Number,max:5}
         ,status:{
             type:String,
             enum: ['want to read', 'read', 'reading'],
             default:'want to read'
-        }
+        },
+        review:{type:String}
     }],
     role:{
         type: String,
