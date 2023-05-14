@@ -1,10 +1,13 @@
 
-const getNoOfItems = async (collectionName) => {
-  const noOfItems = await collectionName.find().count() ;
+const getNoOfItems = async (collectionName,filter) => {
+  const noOfItems = await collectionName.find(filter).count() ;
   return noOfItems;
 }
 
-const checkPage= (page)=>{
+const checkPage= (page,totalPages)=>{
+  if (page > totalPages) {
+    page = totalPages;
+  }
   if (! page || page <= 0 ) {
     page = 1;
   }
@@ -21,14 +24,11 @@ const checkLimit = (limit,noOfItems) =>{
   return limit
 }
 
-const paginationCriteria = async(collectionName,pageNo,limitNo) =>{
-  const noOfItems = await getNoOfItems(collectionName);
-  let page= checkPage(pageNo)
+const paginationCriteria = async(collectionName,pageNo,limitNo,filter) =>{
+  const noOfItems = await getNoOfItems(collectionName,filter);
   const limit = checkLimit (limitNo,noOfItems)
   const totalPages = Math.ceil(noOfItems / limit);
-  if (page > totalPages) {
-    page = totalPages;
-  }
+  let page= checkPage(pageNo,totalPages)
   return {
     page,
     limit,

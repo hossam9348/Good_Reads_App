@@ -6,7 +6,7 @@ const userSchema=mongoose.Schema({
     password:{type:String,required:true},
     imgUrl:{type:String },
     books:[{
-        bookId:{type:mongoose.Schema.Types.ObjectId, ref:'book'}
+        book:{type:mongoose.Schema.Types.ObjectId, ref:'book'}
         ,rate:{type:Number,max:5}
         ,status:{
             type:String,

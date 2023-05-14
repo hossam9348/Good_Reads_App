@@ -2,17 +2,19 @@ const booksModel = require("../models/book");
 const helpers = require("../utiles/helpers");
 
 const getAllBooks = async (req, res,next) => {
-  const {name,categoryId,authorId} = req.query
+  const {name,category,author} = req.query
+  const filter = helpers.filtrationCriteria({name,category,author})
   const {page,limit,totalPages} = await helpers.paginationCriteria(
     booksModel,
     Number(req.query.page),
-    Number(req.query.limit));
-    const filter = helpers.filtrationCriteria({name,categoryId,authorId})
+    Number(req.query.limit),
+    filter);
   try {
     const books = await booksModel
       .find(filter)
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .populate(['author']);
     return res.json({
       status: true,
       data: books,
@@ -26,7 +28,7 @@ const getAllBooks = async (req, res,next) => {
 const getBookById = async (req, res ,next) => {
   const id = req.params.id;
   try {
-    const books = await booksModel.find({ _id: id });
+    const books = await booksModel.findOne({ _id: id }).populate(['category','author']);
     return res.json({ status: true, data: books });
   } catch (err) {
     return next(error);
