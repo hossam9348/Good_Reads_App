@@ -2,8 +2,15 @@ const express = require('express');
 require("dotenv").config();
 const db = require("./config/db");
 const app = express();
+const cors = require("cors");
+
+
 
 // const bodyParser = require('body-parser');
+
+app.use(cors({
+    origin: ['http://example.com', 'http://localhost:3000']
+}));
 
 
 const v1Router = require('./routes/v1/index');
@@ -34,3 +41,5 @@ app.use((error, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`server running at http://localhost:${PORT} .....`)
 })
+
+
