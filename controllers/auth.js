@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const fs=require("fs")
 const userModel = require('../models/user');
-const signAccessToken = require("../services/signAccessToken");
+const signAccessToken = require("../utiles/signAccessToken");
 
 
 
