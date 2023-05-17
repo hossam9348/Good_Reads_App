@@ -8,7 +8,6 @@ const signAccessToken = require("../utiles/signAccessToken");
 
 const register = async (req, res, next) => {
   try {
-    const result = validationResult(req);
     if (!result.isEmpty()) {
       if (req.file) {
 
@@ -18,7 +17,8 @@ const register = async (req, res, next) => {
       error.status = 400;
       error.array = result.array();
       return next(error)
-    }
+    }const result = validationResult(req);
+    
 
     const { firstname, lastname, email, password1, role } = req.body;
 

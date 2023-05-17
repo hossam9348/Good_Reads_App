@@ -1,5 +1,6 @@
 const authorModel = require('../models/author');
 const helpers = require("../utiles/helpers");
+const { validationResult } = require('express-validator');
 
 const getAllAuthors = async (req, res, next) => {
   let page = Number(req.query.page) || 1;
@@ -64,7 +65,7 @@ const createAuthor = async (req, res, next) => {
     if (req.file) {
       newAuthor.imgUrl = `/${req.file.path}`
     }
-    const author = new authorModel.create(newAuthor)
+    const author = await authorModel.create(newAuthor)
     return res.json({ status: true, author });
   } catch (err) {
     console.log(err);
@@ -87,7 +88,37 @@ const deleteAuthor = async (req, res, next) => {
 const updateAuthor = async (req, res, next) => {
   const id = req.params.id
   try {
-    const author = await authorModel.updateOne({ _id: id }, { $set: req.body }, { new: true })
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      if (req.file) {
+
+        fs.unlinkSync(req.file.path);
+      }
+      const error = new Error()
+      error.status = 400;
+      error.array = result.array();
+      return next(error)
+    }
+
+    const { firstname, lastname, date_of_birth } = req.body;
+
+
+    const newAuthor = {
+      firstname: firstname,
+      lastname: lastname,
+      DOB: date_of_birth
+    }
+
+    if (req.file) {
+      newAuthor.imgUrl = `/${req.file.path}`
+    }
+
+    const author = await authorModel.updateOne(
+      { _id: id },
+      { $set: newAuthor },
+      { new: true })
+
     return res.json({ status: true, author })
   }
   catch (err) {

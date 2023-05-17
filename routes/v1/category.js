@@ -1,25 +1,32 @@
-const express=require('express');
-const CategoryRouter=express.Router();
+const express = require('express');
+const CategoryRouter = express.Router();
+const { body } = require('express-validator')
+const categoryController = require('../../controllers/category')
+const isAuthentucated = require('../../middlewares/isAuthentucated')
+const isAdmin = require('../../middlewares/isAdmin')
 
-const categoryController=require ('../../controllers/category')
-
-
-CategoryRouter.get('/dropdown',categoryController.getCategoryAuthor)
-
-
-CategoryRouter.get('/:id',categoryController.getCategoryById)
+CategoryRouter.get('/dropdown', isAuthentucated, isAdmin, categoryController.getCategoryAuthor) //book dropdown
 
 
-// CategoryRouter.get('/books',categoryController.getAllBooks)
+CategoryRouter.get('/:id', isAuthentucated, categoryController.getCategoryById)
 
-CategoryRouter.get('/',categoryController.getAllCategories)
 
-CategoryRouter.post('/',categoryController.createCategory)
+CategoryRouter.get('/', isAuthentucated, categoryController.getAllCategories)
 
-CategoryRouter.delete('/:id',categoryController.deleteCategory)
+CategoryRouter.post('/',
+    isAuthentucated,
+    isAdmin,
+    body('name').isString().isLength({ min: 3, max: 15 })
+    , categoryController.createCategory)
 
-CategoryRouter.put('/:id',categoryController.updateCategory)
+CategoryRouter.delete('/:id', isAuthentucated, isAdmin, categoryController.deleteCategory)
 
-CategoryRouter.patch('/:id',categoryController.partialUpdateCategory)
+CategoryRouter.put('/:id',
+    isAuthentucated,
+    isAdmin,
+    body('name').isString().isLength({ min: 3, max: 15 }),
+    categoryController.updateCategory)
+
+// CategoryRouter.patch('/:id',categoryController.partialUpdateCategory)
 
 module.exports = CategoryRouter
