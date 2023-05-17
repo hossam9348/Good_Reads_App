@@ -46,7 +46,7 @@ const register = async (req, res, next) => {
   }
 };
 
-const login = ("/login", async (req, res, next) => {
+const login =  async (req, res, next) => {
   try {
 
     const result = validationResult(req);
@@ -69,7 +69,7 @@ const login = ("/login", async (req, res, next) => {
     console.log(err);
   }
 
-});
+};
 module.exports = {
   register,
   login,
