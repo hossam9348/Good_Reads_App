@@ -1,11 +1,37 @@
-const express=require('express');
-const authRouter=express.Router();
-// const authMiddleware = require('../../middlewares/auth')  
-const {emailValidation} = require ('../../middlewares/validation')
+const authRouter = require('express').Router();
+const authController = require('../../controllers/auth')
 
-const authController=require ('../../controllers/auth')
+const {
+    validateEmail,
+    validateFirstName,
+    validateLastName,
+    validatePassword1,
+    validatePassword2
+} = require('../../middlewares/validateRegister')
 
-authRouter.post('/register',[emailValidation()],authController.register)
-authRouter.post('/login',emailValidation(),authController.login)
+const validateImage = require('../../middlewares/validateImage')
+
+
+
+const {
+    validateEmailLogin,
+    validatePasswordLogin
+} = require('../../middlewares/validateLogin')
+
+authRouter.post('/register',
+    validateImage,
+    [
+        validateFirstName(),
+        validateLastName(),
+        validateEmail(),
+        validatePassword1(),
+        validatePassword2()
+    ],
+    authController.register)
+
+authRouter.post('/login', [
+    validateEmailLogin(),
+    validatePasswordLogin()
+], authController.login)
 
 module.exports = authRouter
