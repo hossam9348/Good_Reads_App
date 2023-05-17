@@ -7,6 +7,7 @@ const fileStorage = multer.diskStorage({
         cb(null, 'storage/images/')
 
     }, filename: (req, file, cb) => {
+        file.originalname = file.originalname.replace(/ /g, "_");
         cb(null, `${Math.floor(new Date() / 1000)}_${file.originalname}`)
     }
 });

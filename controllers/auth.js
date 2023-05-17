@@ -22,8 +22,8 @@ const register = async (req, res, next) => {
     encryptedPassword = await bcrypt.hash(password1, 10);
 
     const newuser = {
-      firstname: firstname,
-      lastname: lastname,
+      firstName: firstname,
+      lastName: lastname,
       email: email,
       password: encryptedPassword,
       imgUrl: `/${req.file.path}`
