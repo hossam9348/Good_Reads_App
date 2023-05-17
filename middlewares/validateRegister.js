@@ -34,14 +34,15 @@ const validatePassword2 = () =>
         .withMessage("The passwords does not match");
 
 
-
+const validateDate=()=>body('date_of_birth').isDate()
 module.exports =
 {
     validateFirstName,
     validateLastName,
     validateEmail,
     validatePassword1,
-    validatePassword2
+    validatePassword2,
+    validateDate
 }
 
 
