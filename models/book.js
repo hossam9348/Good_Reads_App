@@ -1,8 +1,8 @@
 const mongoose=require('mongoose');
 const bookSchema=mongoose.Schema({
     name:{type:String ,required:true},
-    authorId:{type:mongoose.Schema.Types.ObjectId, ref: 'author' ,required:true},
-    categoryId:{type:mongoose.Schema.Types.ObjectId, ref:'category', required:true},
+    author:{type:mongoose.Schema.Types.ObjectId, ref: 'author' ,required:true},
+    category:{type:mongoose.Schema.Types.ObjectId, ref:'category', required:true},
     imgUrl:{type:String },
 })
 
