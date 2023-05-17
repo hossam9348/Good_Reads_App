@@ -2,10 +2,10 @@ const { body } = require('express-validator');
 const userModel = require('../models/user');
 
 const validateFirstName = () =>
-    body("firstname").isString().isLength({ min: 8, max: 20 });
+    body("firstname").isString().isLength({ min: 3, max: 20 });
 
 const validateLastName = () =>
-    body("lastname").isString().isLength({ min: 8, max: 20 });
+    body("lastname").isString().isLength({ min: 3, max: 20 });
 
 const validateEmail = () => body('email')
     .isEmail()
