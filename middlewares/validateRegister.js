@@ -9,6 +9,7 @@ const validateLastName = () =>
 
 const validateEmail = () => body('email')
     .isEmail()
+    .normalizeEmail({ gmail_remove_dots: false }).trim()
     .custom(
         (value, { req }) => {
             return userModel.findOne({ email: value })
@@ -18,7 +19,7 @@ const validateEmail = () => body('email')
                     }
                 })
 
-        }).normalizeEmail({ gmail_remove_dots: false }).trim();
+        });
 
 const validatePassword1 = () =>
     body('password1')

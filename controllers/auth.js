@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
-const fs=require("fs")
+const fs = require("fs")
 const userModel = require('../models/user');
 const signAccessToken = require("../utiles/signAccessToken");
 
@@ -10,7 +10,10 @@ const register = async (req, res, next) => {
   try {
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      fs.unlinkSync(req.file.path);
+      if (req.file) {
+
+        fs.unlinkSync(req.file.path);
+      }
       const error = new Error()
       error.status = 400;
       error.array = result.array();
@@ -26,7 +29,10 @@ const register = async (req, res, next) => {
       lastName: lastname,
       email: email,
       password: encryptedPassword,
-      imgUrl: `/${req.file.path}`
+
+    }
+    if (req.file) {
+      newuser.imgUrl = `/${req.file.path}`
     }
     if (role) {
       newuser.role = role
