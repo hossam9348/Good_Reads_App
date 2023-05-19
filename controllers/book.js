@@ -1,10 +1,15 @@
 const booksModel = require("../models/book");
 const helpers = require("../utiles/helpers");
+const userModel = require("../models/user")
+const categoryModel = require("../models/category")
+const authorModel = require("../models/author")
+const { validationResult } = require('express-validator');
+const fs = require("fs")
 
-const getAllBooks = async (req, res,next) => {
-  const {name,category,author} = req.query
-  const filter = helpers.filtrationCriteria({name,category,author})
-  const {page,limit,totalPages} = await helpers.paginationCriteria(
+const getAllBooks = async (req, res, next) => {
+  const { name, category, author } = req.query
+  const filter = helpers.filtrationCriteria({ name, category, author })
+  const { page, limit, totalPages } = await helpers.paginationCriteria(
     booksModel,
     Number(req.query.page),
     Number(req.query.limit),
@@ -25,27 +30,43 @@ const getAllBooks = async (req, res,next) => {
   }
 };
 
-const getBookById = async (req, res ,next) => {
+const getBookById = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const books = await booksModel.findOne({ _id: id }).populate(['category','author']);
+    const books = await booksModel.findOne({ _id: id }).populate(['category', 'author']);
     return res.json({ status: true, data: books });
   } catch (err) {
-    return next(error);
+    return next(err);
   }
 };
 
-const createBook = async (req, res ,next) => {
+const createBook = async (req, res, next) => {
   try {
-    const books = new booksModel(req.body);
-    await books.save();
-    return res.json({ status: true, data: books });
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      if (req.file) {
+
+        fs.unlinkSync(req.file.path);
+      }
+      const error = new Error()
+      error.status = 400;
+      error.array = result.array();
+      return next(error)
+    }
+    const { name, author, category } = req.body;
+    const authorObject = await authorModel.findById(author)
+    const categoryObject = await categoryModel.findById(category)
+    const newBook = { name, author: authorObject, category: categoryObject, imgUrl: `/${req.file.path}` };
+
+    const book = await booksModel.create(newBook);
+
+    return res.json({ status: true, book });
   } catch (err) {
-    return next(error);
+    return next(err);
   }
 };
 
-const deleteBook = async (req, res,next) => {
+const deleteBook = async (req, res, next) => {
   const id = req.params.id;
   try {
     await booksModel.deleteOne({ _id: id });
@@ -55,17 +76,30 @@ const deleteBook = async (req, res,next) => {
   }
 };
 
-const updateBook = async (req, res,next) => {
+const updateBook = async (req, res, next) => {
   const id = req.params.id;
   try {
-    await booksModel.updateOne({ _id: id }, { $set: req.body });
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      if (req.file) { fs.unlinkSync(req.file.path); }
+      const error = new Error()
+      error.status = 400;
+      error.array = result.array();
+      return next(error)
+    }
+
+    const { name, author, category } = req.body;
+    const updatedBook = { name, author, category, imgUrl: `/${req.file.path}` };
+
+    await booksModel.findOneAndUpdate({ _id: id }, { $set: updatedBook }, { new: true });
+
     return res.json({ status: true });
   } catch (err) {
     return next(err);
   }
 };
 
-const partialUpdateBook = async (req, res,next) => {
+const partialUpdateBook = async (req, res, next) => {
   const id = req.params.id;
   try {
     const books = await booksModel.findOne({ _id: id });
@@ -81,6 +115,55 @@ const partialUpdateBook = async (req, res,next) => {
   }
 };
 
+// www.localhost:5000/books/:id/add-to-wish-list
+const addBookToWishList = async (req, res, next) => {
+
+  try {
+    const id = req.params.id
+    let { rate, status } = req.body
+    rate > 5 ? rate = 5 : rate
+    const book = await booksModel.findById(id)
+    // check if book in user wish list
+    let hasDoc = await userModel.countDocuments(
+      { _id: req.user.user_id, "books.bookId": book._id });
+
+    if (hasDoc > 0) {
+      //  update book if founded
+      const user = await userModel.findOneAndUpdate(
+        {
+          _id: req.user.user_id,
+          "books.bookId": book._id
+        }, {
+        $set: {
+          "books.$.rate": rate,
+          "books.$.status": status,
+        }
+      }, { new: true })
+
+      return res.send(user)
+    }
+    //  add book if not  founded
+    const user = await userModel.findOneAndUpdate(
+      {
+        _id: req.user.user_id,
+
+      }, {
+      $push: {
+        books: {
+          "bookId": book._id,
+        }
+      }
+    },
+      {
+        new: true
+      })
+
+    return res.send(user)
+  } catch (error) {
+    console.log("error", error)
+  }
+
+}
 module.exports = {
   getAllBooks,
   getBookById,
@@ -88,4 +171,33 @@ module.exports = {
   deleteBook,
   updateBook,
   partialUpdateBook,
+  addBookToWishList,
 };
+
+
+    // const user = await userModel.findOneAndUpdate(
+    //   {
+    //     _id: req.user.user_id,
+    //     books: { $elemMatch: { bookId: book._id } }
+    //     //  book._id
+    //     //  {
+
+    //     //   $ne: book._id
+    //     // }
+
+    //   },
+    //   {
+    //     $set: {
+    //       "books.$.rate": rate,
+    //       "books.$.status": status,
+    //     },
+    //     $setOnInsert: {
+    //       books: {
+    //         'bookId': book._id,
+    //         rate: rate,
+    //         status: status
+    //       }
+    //     }
+    //   }
+    //   ,
+    //   { upsert: true, new: true });

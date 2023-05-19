@@ -26,11 +26,11 @@ const userSchema = mongoose.Schema({
             bookId: {
                 type: mongoose.Schema.Types.ObjectId, ref: 'book'
             }
-            , rate: { type: Number, min: 0, max: 5 }
+            , rate: { type: Number, min: 0, max: 5,default:0 }
             , status: {
                 type: String,
                 enum: ['want to read', 'read', 'reading'],
-                // default: 'want to read'
+                default: 'want to read'
             }
         }
     ],

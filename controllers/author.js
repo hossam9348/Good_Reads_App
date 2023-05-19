@@ -1,6 +1,7 @@
 const authorModel = require('../models/author');
 const helpers = require("../utiles/helpers");
 const { validationResult } = require('express-validator');
+const fs = require("fs")
 
 const getAllAuthors = async (req, res, next) => {
   let page = Number(req.query.page) || 1;
@@ -41,6 +42,7 @@ const getAuthorById = async (req, res, next) => {
 
 const createAuthor = async (req, res, next) => {
   try {
+    console.log("im here")
     const result = validationResult(req);
     if (!result.isEmpty()) {
       if (req.file) {

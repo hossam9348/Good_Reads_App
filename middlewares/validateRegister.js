@@ -1,13 +1,13 @@
 const { body } = require('express-validator');
 const userModel = require('../models/user');
 
-const validateFirstName = () =>
+const FirstName = () =>
     body("firstname").isString().isLength({ min: 3, max: 20 });
 
-const validateLastName = () =>
+const LastName = () =>
     body("lastname").isString().isLength({ min: 3, max: 20 });
 
-const validateEmail = () => body('email')
+const Email = () => body('email')
     .isEmail()
     .normalizeEmail({ gmail_remove_dots: false }).trim()
     .custom(
@@ -21,12 +21,12 @@ const validateEmail = () => body('email')
 
         });
 
-const validatePassword1 = () =>
+const Password1 = () =>
     body('password1')
         .isStrongPassword();
 
 
-const validatePassword2 = () =>
+const Password2 = () =>
     body('password2')
         .exists({ checkFalsy: true })
         .withMessage('You must type a confirmation password')
@@ -34,39 +34,10 @@ const validatePassword2 = () =>
         .withMessage("The passwords does not match");
 
 
-const validateDate=()=>body('date_of_birth').isDate()
-module.exports =
-{
-    validateFirstName,
-    validateLastName,
-    validateEmail,
-    validatePassword1,
-    validatePassword2,
-    validateDate
-}
+const Date=()=>body('date_of_birth').isDate()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const validateRegister={FirstName,LastName,Email,Password1,Password2,Date}
+module.exports = validateRegister
 
 
 
