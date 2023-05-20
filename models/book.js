@@ -7,11 +7,22 @@ const bookSchema = mongoose.Schema({
     rating: [
         {
             user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
-            rate: { type: Number }
+            rate: { type: Number, default: 0 }
         }
-    ]
+    ],
+    rate: { type: Number, default: 0 }
 })
 
+// bookSchema.pre('findOneAndUpdate', function (next) {
+//     const update = this.getUpdate();
+//     if (update.$set.rating || update.$push.rating) {
+//         const totalRatings = this._doc.rating.length + 1;
+//         const sumRatings = this._doc.rating.reduce((acc, rating) => acc + rating.rate, 0) + update.$push.rating.rate;
+//         const averageRating = sumRatings / totalRatings;
+//         this.update({}, { $set: { rate:averageRating } });
+//     }
+//     next();
+// });
 const bookModel = mongoose.model('book', bookSchema)
 
 module.exports = bookModel

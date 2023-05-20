@@ -116,32 +116,50 @@ const partialUpdateBook = async (req, res, next) => {
 };
 
 // www.localhost:5000/books/:id/add-to-wish-list
+//  need to rewriten as soon as possible
 const addBookToWishList = async (req, res, next) => {
 
   try {
     const id = req.params.id
     let { rate, status } = req.body
     rate > 5 ? rate = 5 : rate
-    const book = await booksModel.findById(id)
+    // const book = await booksModel.findById(id)
+
     // check if book in user wish list
     let hasDoc = await userModel.countDocuments(
-      { _id: req.user.user_id, "books.bookId": book._id });
+      { _id: req.user.user_id, "books.bookId": id });
 
     if (hasDoc > 0) {
+
       //  update book if founded
       const user = await userModel.findOneAndUpdate(
         {
           _id: req.user.user_id,
-          "books.bookId": book._id
+          "books.bookId": id
         }, {
         $set: {
           "books.$.rate": rate,
           "books.$.status": status,
         }
       }, { new: true })
+      const book = await booksModel.findOneAndUpdate({
+        _id: id,
+        "rating.user": req.user.user_id
+      }, {
+        $set: {
+          "rating.$.rate": rate,
+       
+        }
+      }, { new: true, useFindAndModify: false, aggregate: true })
+      if (book) {
+        const sum = book.rating.reduce((total, r) => total + r.rate, 0);
+        book.rate = sum / book.rating.length;
 
+        await book.save();
+      }
       return res.send(user)
     }
+
     //  add book if not  founded
     const user = await userModel.findOneAndUpdate(
       {
@@ -150,7 +168,7 @@ const addBookToWishList = async (req, res, next) => {
       }, {
       $push: {
         books: {
-          "bookId": book._id,
+          "bookId": id,
         }
       }
     },
@@ -158,6 +176,29 @@ const addBookToWishList = async (req, res, next) => {
         new: true
       })
 
+    const book = await booksModel.findOneAndUpdate(
+      {
+        _id: id,
+
+      }, {
+      $push: {
+        rating: {
+          "user": req.user.user_id,
+          "rate": 0
+        },
+        // $set: { rate: { $avg: "$rating.$.rate" } }
+      }
+    },
+      {
+        new: true, useFindAndModify: false, aggregate: true
+      })
+    if (book) {
+      const sum = book.rating.reduce((total, r) => total + r.rate, 0);
+      book.rate = sum / book.rating.length;
+
+      await book.save();
+    }
+    // console.log(book)
     return res.send(user)
   } catch (error) {
     console.log("error", error)
