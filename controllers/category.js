@@ -41,7 +41,7 @@ const getCategoryById = async (req, res, next) => {
   }
 }
 
-const createCategory = async (req, res) => {
+const createCategory = async (req, res,next) => {
   try {
 
     const result = validationResult(req);
@@ -111,7 +111,7 @@ const updateCategory = async (req, res) => {
 const getCategoryAuthor = async (req, res) => {
   try {
     const categories = await categoryModel.find({}, { name: 1 })
-    const authors = await authorModel.find({}, { firstName: 1, lastName: 1 })
+    const authors = await authorModel.find({}, { firstname: 1, lastname: 1 })
     return res.json({
       status: true,
       categories,

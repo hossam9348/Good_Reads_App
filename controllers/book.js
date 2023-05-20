@@ -7,8 +7,17 @@ const { validationResult } = require('express-validator');
 const fs = require("fs")
 
 const getAllBooks = async (req, res, next) => {
-  const { name, category, author } = req.query
-  const filter = helpers.filtrationCriteria({ name, category, author })
+  const query = req.query
+  delete query.page
+  delete query.limit
+  if (!query.author){
+    delete query.author
+  }
+  if (!query.category) {
+    delete query.category
+  }
+  const filter = helpers.filtrationCriteria(query)
+  
   const { page, limit, totalPages } = await helpers.paginationCriteria(
     booksModel,
     Number(req.query.page),
@@ -16,13 +25,14 @@ const getAllBooks = async (req, res, next) => {
     filter);
   try {
     const books = await booksModel
-      .find(filter)
+      .find()
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate(['author']);
+      .populate(['category','author']);
+      console.log(books,filter)
     return res.json({
       status: true,
-      data: books,
+      books,
       totalPages,
     });
   } catch (err) {
