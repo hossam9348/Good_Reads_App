@@ -1,17 +1,13 @@
 const { body } = require('express-validator');
 
-const validateEmailLogin = () => body('email')
+const Email = () => body('email')
   .isEmail()
   .normalizeEmail({ gmail_remove_dots: false }).trim();
 
-const validatePasswordLogin = () =>
+const Password = () =>
   body('password')
     .isStrongPassword();
 
 
-
-module.exports =
-{
-  validateEmailLogin,
-  validatePasswordLogin,
-}
+const validateLogin={Email,Password}
+module.exports =validateLogin

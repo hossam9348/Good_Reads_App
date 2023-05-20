@@ -4,12 +4,7 @@ const authorController = require('../../controllers/author')
 const isAuthentucated = require('../../middlewares/isAuthentucated')
 const isAdmin = require('../../middlewares/isAdmin')
 const validateImage = require('../../middlewares/validateImage')
-const {
-    validateFirstName,
-    validateLastName,
-    validateDate
-
-} = require('../../middlewares/validateRegister')
+const validateRegister = require('../../middlewares/validateRegister')
 
 
 authorRouter.post('/',
@@ -17,9 +12,9 @@ authorRouter.post('/',
     isAdmin,
     validateImage,
     [
-        validateFirstName(),
-        validateLastName,
-        validateDate()
+        validateRegister.FirstName(),
+        validateRegister.LastName(),
+        validateRegister.Date()
     ], authorController.createAuthor)
 
 authorRouter.get('/', isAuthentucated, authorController.getAllAuthors)
@@ -34,9 +29,9 @@ authorRouter.put('/:id',
     isAdmin,
     validateImage,
     [
-        validateFirstName(),
-        validateLastName,
-        validateDate()
+        validateRegister.FirstName(),
+        validateRegister.LastName,
+        validateRegister.Date()
     ], authorController.updateAuthor)
 
 // authorRouter.patch('/:id', authorController.partialUpdateAuthor)
