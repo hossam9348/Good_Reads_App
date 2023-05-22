@@ -30,7 +30,7 @@ const getAllBooks = async (req, res, next) => {
       .skip((page - 1) * limit)
       .limit(limit)
       .populate(['category','author']);
-      console.log(books,filter)
+      // console.log(books,filter)
     return res.json({
       status: true,
       books,
@@ -67,8 +67,10 @@ const createBook = async (req, res, next) => {
     const { name, author, category } = req.body;
     const authorObject = await authorModel.findById(author)
     const categoryObject = await categoryModel.findById(category)
-    const newBook = { name, author: authorObject, category: categoryObject, imgUrl: `/${req.file.path}` };
-
+    const newBook = { name, author: authorObject, category: categoryObject};
+    if (req.file) {
+      newBook.imgUrl = `/${req.file.path}`
+    }
     const book = await booksModel.create(newBook);
 
     return res.json({ status: true, book });

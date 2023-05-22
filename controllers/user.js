@@ -22,7 +22,7 @@ const getAllUsers = async (req,res,next)=>{
     page = totalPages;
   }
   try {
-    const categories = await categoryModel
+    const categories = await usersModel
       .find({})
       .skip((page - 1) * limit)
       .limit(limit);

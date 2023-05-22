@@ -3,7 +3,7 @@ const bookSchema = mongoose.Schema({
     name: { type: String, required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'author', required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'category', required: true },
-    imgUrl: { type: String },
+    imgUrl: { type: String, default: "/storage/default/user.png" },
     rating: [
         {
             user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
