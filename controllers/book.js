@@ -29,7 +29,7 @@ const getAllBooks = async (req, res, next) => {
       .find(filter)
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate(['category','author']);
+      .populate(['category', 'author',  'rating.user']);
       // console.log(books,filter)
     return res.json({
       status: true,
@@ -44,7 +44,7 @@ const getAllBooks = async (req, res, next) => {
 const getBookById = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const books = await booksModel.findOne({ _id: id }).populate(['category', 'author']);
+    const books = await booksModel.findOne({ _id: id }).populate(['category', 'author','rating.user']);
     return res.json({ status: true, data: books });
   } catch (err) {
     return next(err);

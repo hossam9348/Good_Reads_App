@@ -30,7 +30,7 @@ authorRouter.put('/:id',
     validateImage,
     [
         validateRegister.FirstName(),
-        validateRegister.LastName,
+        validateRegister.LastName(),
         validateRegister.Date()
     ], authorController.updateAuthor)
 

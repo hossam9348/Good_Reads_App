@@ -42,7 +42,7 @@ const getAuthorById = async (req, res, next) => {
 
 const createAuthor = async (req, res, next) => {
   try {
-    console.log("im here")
+    // console.log("im here")
     const result = validationResult(req);
     if (!result.isEmpty()) {
       if (req.file) {
@@ -116,7 +116,7 @@ const updateAuthor = async (req, res, next) => {
       newAuthor.imgUrl = `/${req.file.path}`
     }
 
-    const author = await authorModel.updateOne(
+    const author = await authorModel.findOneAndUpdate(
       { _id: id },
       { $set: newAuthor },
       { new: true })
