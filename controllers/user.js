@@ -39,7 +39,8 @@ const getAllUsers = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   const id = req.params.id
   try {
-    const User = await usersModel.find({ _id: id }).populate('books.bookId');
+    const User = await usersModel.find({ _id: id }).populate({ path: 'books.bookId', populate: { path: 'author', options: { strictPopulate: false } } });
+    //  .populate({ path: 'books.bookId', populate: { path: 'author', options: { strictPopulate: false } } })
     return res.json({ status: true, User })
   }
   catch (err) {
