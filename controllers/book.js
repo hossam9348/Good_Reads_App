@@ -182,6 +182,8 @@ const addBookToWishList = async (req, res, next) => {
       $push: {
         books: {
           "bookId": id,
+          "rate": rate,
+          "status": status,
         }
       }
     },
