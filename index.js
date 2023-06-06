@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-
+const FRONTEND_URL = require('./config/config').FRONTEND_URL;
 const db = require("./database/db");
 const PORT = require('./config/config').PORT || 5000;
 const v1Router = require('./routes/v1/index');
@@ -12,7 +12,7 @@ const app = express();
 
 // middlewares
 app.use(cors({
-    origin: ['http://localhost:3000',"*"]
+    origin: [FRONTEND_URL,"*"]
 }));
 app.use(express.json())
 app.use('/storage', express.static(path.join(__dirname, 'storage')))

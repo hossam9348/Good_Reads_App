@@ -134,10 +134,14 @@ const addBookToWishList = async (req, res, next) => {
 
   try {
     const id = req.params.id
+    console.log(id)
     let { rate, status } = req.body
     rate > 5 ? rate = 5 : rate
-    // const book = await booksModel.findById(id)
-
+    const checkBookId = await booksModel.findById(id)
+console.log(checkBookId)
+    if (!checkBookId ) {
+      return res.status(400).send({ "error": "aaaaaaaaaaa" })
+    }
     // check if book in user wish list
     let hasDoc = await userModel.countDocuments(
       { _id: req.user.user_id, "books.bookId": id });
