@@ -15,9 +15,9 @@ const getAllBooks = async (req, res, next) => {
   if (req.query.category) {
     filter.category = req.query.category
   }
-  if (req.query.name) {
-    filter.name = req.query.name
-  }
+  // if (req.query.name) {
+  //   filter.name = req.query.name
+  // }
   // const filter = {name:} 
   const { page, limit, totalPages } = await helpers.paginationCriteria(
     booksModel,
@@ -26,7 +26,7 @@ const getAllBooks = async (req, res, next) => {
     filter);
   try {
     const books = await booksModel
-      .find(filter)
+      .find(filter )
       .skip((page - 1) * limit)
       .limit(limit)
       .populate(['category', 'author',  'rating.user']);
@@ -40,6 +40,42 @@ const getAllBooks = async (req, res, next) => {
     return next(err);
   }
 };
+
+const searchAllBooks = async (req, res, next) => {
+  // const query = req.query
+  let filter = {}
+  // if (req.query.author) {
+  //   filter.author = req.query.author
+  // }
+  // if (req.query.category) {
+  //   filter.category = req.query.category
+  // }
+  if (req.query.name) {
+    filter.name = req.query.name
+  }
+  // const filter = {name:} 
+  const { page , limit, totalPages } = await helpers.paginationCriteria(
+    booksModel,
+    Number(req.query.page),
+    Number(req.query.limit),
+    filter);
+  try {
+    const books = await booksModel
+      .find({ name: { $regex: filter.name, $options: 'i' } })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate(['category', 'author', 'rating.user']);
+    // console.log(books,filter)
+    return res.json({
+      status: true,
+      books,
+      totalPages,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 
 const getBookById = async (req, res, next) => {
   const id = req.params.id;
@@ -232,6 +268,7 @@ module.exports = {
   updateBook,
   partialUpdateBook,
   addBookToWishList,
+  searchAllBooks
 };
 
 

@@ -10,6 +10,7 @@ const bookController = require('../../controllers/book')
 
 
 bookRouter.get('/', isAuthentucated, bookController.getAllBooks)
+bookRouter.get('/search', isAuthentucated, bookController.searchAllBooks)
 
 bookRouter.get('/:id', isAuthentucated, bookController.getBookById)
 
